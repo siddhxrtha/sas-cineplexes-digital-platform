@@ -7,11 +7,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const movieParam = window.SAS.getQueryParam("id");
   const timeParam = window.SAS.getQueryParam("time");
+  const dateParam = window.SAS.getQueryParam("date");
   const movie = window.SAS.getMovieById(movieParam) || window.SAS.movies[0];
   if (!movie) return;
 
   const dates = window.SAS.getUpcomingDates(5);
-  let selectedDate = dates[0];
+  let selectedDate = dates.find((date) => date.iso === dateParam) || dates[0];
   let selectedTime = movie.showtimes.includes(timeParam) ? timeParam : movie.showtimes[0];
   let bookedSeats = new Set();
   const selectedSeats = new Map();

@@ -86,7 +86,25 @@
     return map;
   };
 
+  const searchMoviesByTitle = async (titles) => {
+    const results = [];
+    for (const title of titles) {
+      try {
+        const data = await fetchJson("/search/movie", { query: title });
+        if (Array.isArray(data.results) && data.results.length > 0) {
+          results.push(data.results[0]);
+        }
+      } catch (_error) {
+        // skip if search fails
+      }
+    }
+    return results;
+  };
+
   const fetchCatalogMovies = async () => {
+    const targetTitles = ["Thalaivar Thambi Thalaimaiyil", "Jana Nayagan", "My Lord", "Vaa Vaathiyaar", "Dhurandhar", "Marty Supreme"];
+    const specificMovies = await searchMoviesByTitle(targetTitles);
+
     const discoverRequests = [1, 2, 3, 4].map((page) =>
       fetchJson("/discover/movie", {
         include_adult: "false",
@@ -100,7 +118,7 @@
     );
 
     const responses = await Promise.all(discoverRequests);
-    const allResults = responses.flatMap((data) => (Array.isArray(data.results) ? data.results : []));
+    const allResults = [...specificMovies, ...responses.flatMap((data) => (Array.isArray(data.results) ? data.results : []))];
     const deduped = [];
     const seen = new Set();
 

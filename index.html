@@ -6,7 +6,7 @@
   <title>SAS Cineplexes | Home</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
@@ -21,44 +21,78 @@
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
           <li class="nav-item"><a class="nav-link" data-nav="index.html" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" data-nav="movies.html" href="movies.html">Movies</a></li>
-          <li class="nav-item"><a class="nav-link" data-nav="seats.html" href="seats.html">Book Tickets</a></li>
-          <li class="nav-item"><a class="nav-link" data-nav="checkout.html" href="checkout.html">Checkout</a></li>
-        </ul>
+          <li class="nav-item"><a class="nav-link" data-nav="movies.html" href="movies.html">Movies</a></li>`r`n        </ul>
       </div>
     </div>
   </nav>
 
   <main>
-    <section class="tmdb-carousel-section">
-      <div id="tmdbCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-        <div class="carousel-indicators" id="tmdbCarouselIndicators">
+    <section class="tmdb-carousel-section hero-cinema-section">
+      <div class="quick-book-bar" data-reveal>
+        <button id="quickBookToggle" class="quick-book-toggle" type="button" aria-expanded="false" aria-controls="quickBookForm">
+          <span class="quick-book-label">
+            <i class="bi bi-lightning-charge-fill"></i>
+            <span>Quick Book</span>
+          </span>
+          <i class="bi bi-chevron-down quick-book-chevron" aria-hidden="true"></i>
+        </button>
+        <form id="quickBookForm" class="quick-book-form is-collapsed" autocomplete="off">
+          <select id="quickMovie" class="quick-input" aria-label="Select movie"></select>
+          <select id="quickCinema" class="quick-input" aria-label="Select cinema">
+            <option value="SAS Downtown">SAS Downtown</option>
+            <option value="SAS Marina">SAS Marina</option>
+            <option value="SAS Grand Mall">SAS Grand Mall</option>
+          </select>
+          <select id="quickExperience" class="quick-input" aria-label="Select experience">
+            <option value="2D">2D</option>
+            <option value="IMAX">IMAX</option>
+            <option value="Dolby Atmos">Dolby Atmos</option>
+          </select>
+          <input id="quickDate" class="quick-input quick-date" type="date" aria-label="Select date">
+          <select id="quickShowtime" class="quick-input" aria-label="Select showtime"></select>
+          <button type="submit" class="quick-book-btn">Book</button>
+        </form>
+      </div>
+
+      <div id="tmdbCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators visually-hidden" id="tmdbCarouselIndicators">
           <button type="button" data-bs-target="#tmdbCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
         </div>
         <div class="carousel-inner" id="tmdbCarouselInner">
           <div class="carousel-item active">
             <div class="tmdb-slide fallback-slide">
               <div class="tmdb-overlay"></div>
-              <div class="container tmdb-caption-wrap">
-                <div class="tmdb-caption glass-card">
+              <div class="container hero-layout">
+                <div class="hero-main">
                   <p class="kicker mb-2">Loading Featured Movies</p>
                   <h1>Discovering 2026 movies for your next booking...</h1>
                   <p class="lead-text mb-4">Please wait while we load the 2026 cinema lineup.</p>
                   <a href="movies.html" class="btn btn-danger route-link">Browse Movies</a>
                 </div>
+                <aside class="hero-side-rail d-none d-lg-flex"></aside>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <button class="carousel-control-prev" type="button" data-bs-target="#tmdbCarousel" data-bs-slide="prev">
-          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#tmdbCarousel" data-bs-slide="next">
-          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-          <span class="visually-hidden">Next</span>
-        </button>
+      <div class="container hero-controls-wrap" data-reveal>
+        <div class="hero-control-buttons">
+          <button id="heroPrev" class="hero-icon-btn" type="button" aria-label="Previous movie">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button id="heroNext" class="hero-icon-btn" type="button" aria-label="Next movie">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+        <div class="hero-progress-track">
+          <span id="heroProgressBar"></span>
+        </div>
+        <div class="hero-count">
+          <span id="heroCurrent">01</span>
+          <span class="hero-count-sep">/</span>
+          <span id="heroTotal">01</span>
+        </div>
       </div>
     </section>
 
@@ -101,13 +135,45 @@
     </section>
   </main>
 
-  <footer class="site-footer py-4">
-    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-      <p class="mb-0">&copy; 2026 SAS Cineplexes. All rights reserved.</p>
-      <div class="social-row">
-        <a href="#" aria-label="Instagram"><i class="bi bi-instagram"></i></a>
-        <a href="#" aria-label="YouTube"><i class="bi bi-youtube"></i></a>
-        <a href="#" aria-label="Facebook"><i class="bi bi-facebook"></i></a>
+    <footer class="site-footer py-5">
+    <div class="container footer-shell">
+      <div class="footer-grid">
+        <section class="footer-col footer-brand">
+          <h3>SAS Cineplex</h3>
+          <p>
+            We offer world-class viewing with advanced audio-visual systems, modern interiors, and a warm,
+            family-friendly atmosphere. Whether you're watching the latest blockbuster or a regional classic,
+            every visit to SAS promises excellence.
+          </p>
+        </section>
+
+        <section class="footer-col">
+          <h4 class="footer-head">Help</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="movies.html" class="route-link">Movies</a></li>
+            <li><a href="#">Coming Soon</a></li>
+            <li><a href="#">Contact Us</a></li>`r`n        </ul>
+        </section>
+
+        <section class="footer-col">
+          <h4 class="footer-head">POLICIES</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms &amp; Conditions</a></li>
+            <li><a href="#">Refund Policy</a></li>`r`n        </ul>
+        </section>
+
+        <section class="footer-col footer-contact">
+          <h4 class="footer-head">Contact Us</h4>
+          <p>0000000</p>
+          <p>0000000</p>
+          <p><a href="mailto:info@mycinemas.sg">info@mycinemas.sg</a></p>
+        </section>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="mb-0">&copy; SAS Cineplexes Designed by Balamurugan Siddhartha</p>
       </div>
     </div>
   </footer>
@@ -119,3 +185,6 @@
   <script src="js/home.js"></script>
 </body>
 </html>
+
+
+
