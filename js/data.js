@@ -2,7 +2,10 @@
   const TMDB_API_KEY = "fb9193505c46cec231c1857187e17d9a";
   const TMDB_API_BASE = "https://api.themoviedb.org/3";
   const TMDB_IMAGE_BASE = "https://image.tmdb.org/t/p/";
-  const CATALOG_YEAR = 2026;
+  const CATALOG_START_YEAR = 2025;
+  const CATALOG_END_YEAR = 2026;
+  const CATALOG_START_DATE = `${CATALOG_START_YEAR}-01-01`;
+  const CATALOG_END_DATE = `${CATALOG_END_YEAR}-12-31`;
   const movies = [];
   const defaultShowtimes = ["10:30 AM", "1:20 PM", "4:10 PM", "7:00 PM", "9:50 PM"];
 
@@ -92,7 +95,17 @@
       try {
         const data = await fetchJson("/search/movie", { query: title });
         if (Array.isArray(data.results) && data.results.length > 0) {
-          results.push(data.results[0]);
+          const match =
+            data.results.find((movie) => {
+              const releaseYear = Number(String(movie && movie.release_date ? movie.release_date : "").slice(0, 4));
+              return (
+                String(movie && movie.original_language ? movie.original_language : "").toLowerCase() === "ta" &&
+                Number.isFinite(releaseYear) &&
+                releaseYear >= CATALOG_START_YEAR &&
+                releaseYear <= CATALOG_END_YEAR
+              );
+            }) || data.results[0];
+          results.push(match);
         }
       } catch (_error) {
         // skip if search fails
@@ -102,17 +115,19 @@
   };
 
   const fetchCatalogMovies = async () => {
-    const targetTitles = ["Thalaivar Thambi Thalaimaiyil", "Jana Nayagan", "My Lord", "Vaa Vaathiyaar", "Dhurandhar", "Marty Supreme"];
+    const targetTitles = ["Thalaivar Thambi Thalaimaiyil", "Jana Nayagan", "My Lord", "Vaa Vaathiyaar", "Dhurandhar", "Thaai Kizhavi", "LIK", "Toxic"];
     const specificMovies = await searchMoviesByTitle(targetTitles);
 
-    const discoverRequests = [1, 2, 3, 4].map((page) =>
+    const discoverRequests = [1, 2, 3, 4, 5, 6].map((page) =>
       fetchJson("/discover/movie", {
         include_adult: "false",
         include_video: "false",
         sort_by: "popularity.desc",
         region: "IN",
         with_origin_country: "IN",
-        primary_release_year: String(CATALOG_YEAR),
+        with_original_language: "ta",
+        "primary_release_date.gte": CATALOG_START_DATE,
+        "primary_release_date.lte": CATALOG_END_DATE,
         page: String(page),
       })
     );
@@ -125,7 +140,10 @@
     allResults.forEach((movie) => {
       if (!movie || seen.has(movie.id)) return;
       if (!movie.poster_path && !movie.backdrop_path) return;
-      if (!movie.release_date || !movie.release_date.startsWith(String(CATALOG_YEAR))) return;
+      if (String(movie.original_language || "").toLowerCase() !== "ta") return;
+      if (!movie.release_date) return;
+      const releaseYear = Number(String(movie.release_date).slice(0, 4));
+      if (!Number.isFinite(releaseYear) || releaseYear < CATALOG_START_YEAR || releaseYear > CATALOG_END_YEAR) return;
       seen.add(movie.id);
       deduped.push(movie);
     });
@@ -136,7 +154,7 @@
       return scoreB - scoreA;
     });
 
-    return deduped.slice(0, 64);
+    return deduped.slice(0, 80);
   };
 
   const fetchRuntimeMap = async (movieIds) => {
@@ -280,6 +298,7 @@
     clearBooking,
     generateBookingId,
     getQueryParam,
-    catalogYear: CATALOG_YEAR,
+    catalogStartYear: CATALOG_START_YEAR,
+    catalogEndYear: CATALOG_END_YEAR,
   };
 })();

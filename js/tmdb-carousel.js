@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const safeTitle = escapeHtml(movie.title || "Untitled");
         const overview = escapeHtml(shortText(movie.description || "Synopsis is currently unavailable for this title."));
         const backdrop = getBackdropUrl(movie);
-        const releaseYear = (movie.releaseDate || "").slice(0, 4) || "2026";
+        const releaseYear = (movie.releaseDate || "").slice(0, 4) || "2025";
         const bookingTime = Array.isArray(movie.showtimes) && movie.showtimes.length ? movie.showtimes[0] : "7:00 PM";
         const bookingLink = `seats.html?id=${encodeURIComponent(movie.id)}&time=${encodeURIComponent(bookingTime)}`;
         const trailerQuery = encodeURIComponent(`${movie.title || "movie"} official trailer`);
@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
-  renderSlides(slides, { label: "Now Showing 2026" });
+  renderSlides(slides, { label: "Now Showing Tamil 2025-2026" });
   setupQuickBook(slides);
 
   const instance = window.bootstrap && window.bootstrap.Carousel

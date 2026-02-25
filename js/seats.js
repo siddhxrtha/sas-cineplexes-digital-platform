@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
   const seatsPerRow = 12;
+  const MAX_SELECTABLE_SEATS = 8;
 
   const movieParam = window.SAS.getQueryParam("id");
   const timeParam = window.SAS.getQueryParam("time");
@@ -30,6 +31,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const taxAmount = document.getElementById("taxAmount");
   const totalAmount = document.getElementById("totalAmount");
   const continueButton = document.getElementById("continueCheckout");
+  const seatHint = document.getElementById("seatHint");
 
   if (
     !titleNode ||
@@ -105,6 +107,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     totalAmount.textContent = window.SAS.formatCurrency(totals.total);
 
     continueButton.disabled = sortedSeatIds.length === 0;
+
+    if (seatHint) {
+      if (sortedSeatIds.length > 0) {
+        seatHint.textContent = `${sortedSeatIds.length} seat${sortedSeatIds.length === 1 ? "" : "s"} selected. You can select up to ${MAX_SELECTABLE_SEATS}.`;
+        seatHint.classList.remove("is-error");
+      } else {
+        seatHint.textContent = "Tip: tap seats to select. Grey seats are unavailable.";
+        seatHint.classList.remove("is-error");
+      }
+    }
   };
 
   const renderDateOptions = () => {
@@ -137,15 +149,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     bookedSeats = getSeededBookedSeats(`${movie.id}-${selectedDate.iso}-${selectedTime}`);
 
     rows.forEach((row, rowIndex) => {
+      const rowWrap = document.createElement("div");
+      rowWrap.className = "seat-row";
+
+      const rowLabelStart = document.createElement("span");
+      rowLabelStart.className = "seat-row-label";
+      rowLabelStart.textContent = row;
+      rowWrap.appendChild(rowLabelStart);
+
+      const rowSeats = document.createElement("div");
+      rowSeats.className = "seat-row-seats";
+
       for (let col = 1; col <= seatsPerRow; col += 1) {
+        if (col === 7) {
+          const aisle = document.createElement("span");
+          aisle.className = "seat-aisle";
+          aisle.setAttribute("aria-hidden", "true");
+          rowSeats.appendChild(aisle);
+        }
+
         const seatId = `${row}${col}`;
         const tier = tierForRow(rowIndex);
         const price = priceForTier(tier);
         const button = document.createElement("button");
         button.type = "button";
         button.className = `seat-btn ${tier}`;
+        button.setAttribute("role", "gridcell");
         button.textContent = col;
-        button.setAttribute("aria-label", `Seat ${seatId}`);
+        button.setAttribute("aria-label", `Seat ${seatId}, ${tier}, ${window.SAS.formatCurrency(price)}`);
         button.dataset.seatId = seatId;
         button.dataset.tier = tier;
         button.dataset.price = String(price);
@@ -153,10 +184,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (bookedSeats.has(seatId)) {
           button.classList.add("booked");
           button.disabled = true;
+          button.setAttribute("aria-label", `Seat ${seatId} booked`);
         }
 
-        seatGrid.appendChild(button);
+        rowSeats.appendChild(button);
       }
+
+      const rowLabelEnd = document.createElement("span");
+      rowLabelEnd.className = "seat-row-label";
+      rowLabelEnd.textContent = row;
+
+      rowWrap.appendChild(rowSeats);
+      rowWrap.appendChild(rowLabelEnd);
+      seatGrid.appendChild(rowWrap);
     });
 
     updateSummary();
@@ -196,6 +236,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       selectedSeats.delete(seatId);
       button.classList.remove("selected");
     } else {
+      if (selectedSeats.size >= MAX_SELECTABLE_SEATS) {
+        if (seatHint) {
+          seatHint.textContent = `You can select a maximum of ${MAX_SELECTABLE_SEATS} seats per booking.`;
+          seatHint.classList.add("is-error");
+        }
+        return;
+      }
       selectedSeats.set(seatId, { id: seatId, tier, price });
       button.classList.add("selected");
     }

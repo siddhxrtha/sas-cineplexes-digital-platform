@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SAS Cineplexes | Seat Selection</title>
+  <link rel="icon" type="image/png" href="https://static.mycinemas.sg/mycinemas/assets/images/logo.png">
+  <link rel="apple-touch-icon" href="https://static.mycinemas.sg/mycinemas/assets/images/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800&family=Lexend:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -11,30 +13,40 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
 </head>
-<body class="page-shell">
+<body class="page-shell booking-flow-page page-seats">
   <nav class="navbar navbar-expand-lg navbar-dark sas-navbar sticky-top">
     <div class="container">
-      <a class="navbar-brand brand-logo route-link" href="index.html">SAS Cineplexes</a>
+      <a class="navbar-brand brand-logo route-link" href="index.html"><img src="https://static.mycinemas.sg/mycinemas/assets/images/logo.png" class="site-logo site-logo-nav" alt="SAS Cineplex logo"></a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="mainNav">
         <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-2">
           <li class="nav-item"><a class="nav-link" data-nav="index.html" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" data-nav="movies.html" href="movies.html">Movies</a></li>`r`n        </ul>
+          <li class="nav-item"><a class="nav-link" data-nav="movies.html" href="movies.html">Movies</a></li>        </ul>
       </div>
     </div>
   </nav>
 
   <main class="section-space">
     <div class="container">
+      <nav class="booking-stepper mb-4" aria-label="Booking progress" data-reveal>
+        <ol>
+          <li><span>1</span><small>Movie</small></li>
+          <li class="is-active"><span>2</span><small>Seats</small></li>
+          <li><span>3</span><small>Checkout</small></li>
+          <li><span>4</span><small>Payment</small></li>
+          <li><span>5</span><small>Confirm</small></li>
+        </ol>
+      </nav>
+
       <div class="section-head mb-4" data-reveal>
-        <h1 class="mb-0">Select Your Seats</h1>
+        <h1 class="mb-0">Choose Your Seats</h1>
       </div>
 
       <div class="row g-4">
         <div class="col-lg-8">
-          <div class="glass-card p-3 p-md-4 mb-4" data-reveal>
+          <section class="glass-card p-3 p-md-4 mb-4" data-reveal>
             <h2 class="h5 mb-3" id="seatsMovieTitle">Movie</h2>
             <div class="row g-3">
               <div class="col-md-6">
@@ -46,19 +58,22 @@
                 <div class="d-flex flex-wrap gap-2" id="timeOptions"></div>
               </div>
             </div>
-          </div>
+          </section>
 
-          <div class="glass-card p-3 p-md-4" data-reveal>
+          <section class="glass-card p-3 p-md-4" data-reveal>
             <div class="seat-legend mb-3">
-              <span><i class="seat-swatch standard"></i> Standard ($12)</span>
-              <span><i class="seat-swatch premium"></i> Premium ($18)</span>
               <span><i class="seat-swatch recliner"></i> Recliner ($24)</span>
+              <span><i class="seat-swatch premium"></i> Premium ($18)</span>
+              <span><i class="seat-swatch standard"></i> Standard ($12)</span>
               <span><i class="seat-swatch booked"></i> Booked</span>
               <span><i class="seat-swatch selected"></i> Selected</span>
             </div>
-            <div class="screen-pill mb-4">SCREEN THIS WAY</div>
-            <div id="seatGrid" class="seat-grid"></div>
-          </div>
+            <p id="seatHint" class="seat-hint mb-3">Tip: tap seats to select. Grey seats are unavailable.</p>
+            <div class="seat-map-shell">
+              <div class="screen-pill mb-4">SCREEN THIS WAY</div>
+              <div id="seatGrid" class="seat-layout" role="grid" aria-label="Cinema seat map"></div>
+            </div>
+          </section>
         </div>
 
         <div class="col-lg-4">
@@ -66,8 +81,8 @@
             <h2 class="h5 mb-3">Booking Summary</h2>
             <p class="mb-1"><strong>Movie:</strong> <span id="summaryMovie">-</span></p>
             <p class="mb-1"><strong>Date:</strong> <span id="summaryDate">-</span></p>
-            <p class="mb-3"><strong>Time:</strong> <span id="summaryTime">-</span></p>
-            <p class="mb-1"><strong>Seats:</strong> <span id="summarySeats">None</span></p>
+            <p class="mb-1"><strong>Time:</strong> <span id="summaryTime">-</span></p>
+            <p class="mb-3"><strong>Seats:</strong> <span id="summarySeats">None</span></p>
             <hr class="border-secondary">
             <div class="price-breakdown">
               <p><span>Subtotal</span><strong id="subtotalAmount">$0.00</strong></p>
@@ -86,7 +101,8 @@
     <div class="container footer-shell">
       <div class="footer-grid">
         <section class="footer-col footer-brand">
-          <h3>SAS Cineplex</h3>
+          <h3 class="visually-hidden">SAS Cineplex</h3>
+          <img src="https://static.mycinemas.sg/mycinemas/assets/images/logo.png" class="site-logo site-logo-footer" alt="SAS Cineplex logo">
           <p>
             We offer world-class viewing with advanced audio-visual systems, modern interiors, and a warm,
             family-friendly atmosphere. Whether you're watching the latest blockbuster or a regional classic,
@@ -100,7 +116,7 @@
             <li><a href="#">About Us</a></li>
             <li><a href="movies.html" class="route-link">Movies</a></li>
             <li><a href="#">Coming Soon</a></li>
-            <li><a href="#">Contact Us</a></li>`r`n        </ul>
+            <li><a href="#">Contact Us</a></li>        </ul>
         </section>
 
         <section class="footer-col">
@@ -108,7 +124,7 @@
           <ul class="footer-links">
             <li><a href="#">Privacy Policy</a></li>
             <li><a href="#">Terms &amp; Conditions</a></li>
-            <li><a href="#">Refund Policy</a></li>`r`n        </ul>
+            <li><a href="#">Refund Policy</a></li>        </ul>
         </section>
 
         <section class="footer-col footer-contact">
@@ -131,6 +147,10 @@
   <script src="js/seats.js"></script>
 </body>
 </html>
+
+
+
+
 
 
 

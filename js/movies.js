@@ -14,12 +14,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     grid.innerHTML = `
       <div class="col-12">
         <article class="glass-card p-4 text-center">
-          <h3 class="h4 mb-2">No 2026 movies available right now</h3>
+          <h3 class="h4 mb-2">No Tamil movies for 2025-2026 right now</h3>
           <p class="mb-0 text-secondary-custom">Try refreshing the page to load the latest lineup.</p>
         </article>
       </div>
     `;
-    countText.textContent = "0 movies in 2026";
+    countText.textContent = "0 movies in Tamil (2025-2026)";
     filterWrap.innerHTML = "";
     return;
   }
@@ -51,15 +51,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             <article class="movie-card glass-card h-100" data-reveal>
               <img src="${movie.poster}" alt="${movie.title} poster">
               <div class="card-body">
-                <p class="kicker mb-2">${movie.genre} | ${movie.language} | ${(movie.releaseDate || "").slice(0, 4) || "2026"}</p>
+                <p class="kicker mb-2">${movie.genre} | ${movie.language} | ${(movie.releaseDate || "").slice(0, 4) || "2025"}</p>
                 <h3 class="h4">${movie.title}</h3>
                 <p class="movie-meta">${movie.rating} | ${movie.duration}</p>
                 <div class="d-flex flex-wrap gap-2 mb-3">
                   ${movie.formats.slice(0, 3).map((format) => `<span class="chip">${format}</span>`).join("")}
                 </div>
                 <div class="d-flex gap-2">
-                  <a class="btn btn-sm btn-outline-light route-link" href="movie.html?id=${movie.id}">View Details</a>
-                  <a class="btn btn-sm btn-danger route-link" href="seats.html?id=${movie.id}">Book Tickets</a>
+                  <a class="btn btn-sm btn-danger route-link" href="movie.html?id=${movie.id}">Select Showtimes</a>
                 </div>
               </div>
             </article>
@@ -68,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
       .join("");
 
-    countText.textContent = `${filtered.length} movie${filtered.length === 1 ? "" : "s"} in 2026`;
+    countText.textContent = `${filtered.length} movie${filtered.length === 1 ? "" : "s"} in Tamil (2025-2026)`;
   };
 
   filterWrap.addEventListener("click", (event) => {
